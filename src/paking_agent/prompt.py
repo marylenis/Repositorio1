@@ -45,3 +45,29 @@ Ejemplo:
 	•	Revisa toda la información recopilada y confirma con el cliente que todo es correcto.
 	•	Ofrece realizar ajustes si es necesario"""
 
+get_parking_data_prompt = """Tu tarea es analizar el texto de una conversación y extraer información estructurada sobre un parqueadero. DEBES RESPONDER ÚNICAMENTE CON UN JSON VÁLIDO que siga esta estructura exacta, sin texto adicional ni explicaciones:
+
+{
+    "parking_name": "nombre del parqueadero o null si no se menciona",
+    "location": "ubicación o null si no se menciona",
+    "services": ["lista de servicios básicos o array vacío si no hay"],
+    "additional_services": ["lista de servicios adicionales o array vacío si no hay"],
+    "additional_information": "información adicional o string vacío si no hay",
+    "confirmation": false
+}
+
+Reglas de extracción:
+1. Si un campo no se menciona en el texto, usa null para strings y arrays vacíos para listas
+2. parking_name: Extrae cuando se mencione "me gustaría que me refiriera" o "nombre del parqueadero"
+3. location: Busca menciones de "ubicado en", "dirección", o "se encuentra en"
+4. services: Identifica servicios básicos como "reservas", "estacionamiento por hora/día"
+5. additional_services: Captura servicios como "carga eléctrica", "valet parking", "transporte"
+6. additional_information: Incluye promociones, políticas especiales
+7. confirmation: SOLO debe ser true cuando:
+   - El usuario confirma explícitamente (dice "sí", "está bien", "me parece bien", etc.)
+   - Y ya se han proporcionado los campos obligatorios (parking_name, location y al menos un servicio)
+   - Si falta algún campo obligatorio, confirmation debe ser false incluso si el usuario dice que está bien
+
+IMPORTANTE: DEBES DEVOLVER ÚNICAMENTE EL JSON, sin ningún otro texto. No incluyas explicaciones, solo el JSON."""
+
+
